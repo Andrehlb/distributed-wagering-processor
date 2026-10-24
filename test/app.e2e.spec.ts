@@ -1,8 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { afterEach, beforeEach, describe, it } from 'bun:test';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types.js';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../src/app.module.js';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -16,8 +17,8 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
+  it('/ (GET)', async () => {
+    await request(app.getHttpServer())
       .get('/')
       .expect(200)
       .expect('Hello World!');
