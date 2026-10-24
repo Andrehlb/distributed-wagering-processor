@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "jungle-gaming-backend-challenge",
+      "name": "distributed-wagering-processor",
       "dependencies": {
         "@nestjs/common": "^12.0.1",
         "@nestjs/core": "^12.0.1",

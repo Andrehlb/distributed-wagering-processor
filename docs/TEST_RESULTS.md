@@ -1,4 +1,4 @@
-# Test Results — Jungle Gaming Backend Challenge
+# Test Results — Distributed Wagering Processor
 
 ## 1. Initial Environment Validation
 
