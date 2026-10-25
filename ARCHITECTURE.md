@@ -1,3 +1,17 @@
+<a id="top"></a>
+
+<div align="center">
+
+**ANDREHLB DEVLAB · DISTRIBUTED WAGERING PROCESSOR**
+
+[![INICIO](https://img.shields.io/badge/INICIO-1A1A1A?style=for-the-badge)](README.md) [![ARQUITETURA](https://img.shields.io/badge/ARQUITETURA-6D7F66?style=for-the-badge)](ARCHITECTURE.md) [![TESTES_102](https://img.shields.io/badge/TESTES_102-A7C2D6?style=for-the-badge)](docs/TEST_RESULTS.md) [![AUDITORIA](https://img.shields.io/badge/AUDITORIA-E18A7A?style=for-the-badge)](docs/AUDIT.md)
+
+<sub>Documentação interligada · paleta: creme, areia, grafite, sálvia e coral</sub>
+
+</div>
+
+---
+
 # Arquitetura — Distributed Wagering Processor
 
 ## Estrutura e responsabilidade
@@ -93,3 +107,12 @@ Autenticação não compete com a correção financeira nesta entrega. O ponto d
 - Testes usam PostgreSQL 17 e LocalStack em containers, três processos reais Bun no host e processos adicionais de consumidor/publisher. Não representam validação em AWS real ou teste de carga com metas de throughput.
 - Os testes aceleram visibilidade e vencimento de backoff de maneira explícita. A espera de 24 horas não é executada em tempo real.
 - IdP, autorização em produção, TLS, dashboards, OpenTelemetry e ledger de partidas dobradas não foram implementados; são extensões fora do núcleo obrigatório.
+
+
+---
+
+<div align="center">
+
+[![VOLTAR_AO_README](https://img.shields.io/badge/VOLTAR_AO_README-1A1A1A?style=for-the-badge)](README.md) [![VOLTAR_AO_TOPO](https://img.shields.io/badge/VOLTAR_AO_TOPO-6D7F66?style=for-the-badge)](#top)
+
+</div>
