@@ -1,0 +1,72 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wagering
+      POSTGRES_USER: wagering
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U wagering -d wagering']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  localstack:
+    image: localstack/localstack:4.10.0
+    environment:
+      SERVICES: sqs
+      SQS_ENDPOINT_STRATEGY: path
+      AWS_DEFAULT_REGION: us-east-1
+    ports:
+      - '127.0.0.1:4566:4566'
+    volumes:
+      - ./scripts/init-queues.sh:/etc/localstack/init/ready.d/init-queues.sh:ro
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'awslocal sqs get-queue-url --queue-name wager-events.fifo >/dev/null',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  migrate:
+    profiles: ['app']
+    image: distributed-wagering-processor:local
+    build: .
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    command: ['bun', 'scripts/migrate.ts']
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    profiles: ['app']
+    image: distributed-wagering-processor:local
+    build: .
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      SQS_ENDPOINT: http://localstack:4566
+      WORKERS_ENABLED: 'true'
+    ports:
+      - '127.0.0.1::3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    stop_grace_period: 45s
+
+volumes:
+  postgres_data:
