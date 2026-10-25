@@ -1,3 +1,17 @@
+<a id="top"></a>
+
+<div align="center">
+
+**ANDREHLB DEVLAB · DISTRIBUTED WAGERING PROCESSOR**
+
+[![INICIO](https://img.shields.io/badge/INICIO-1A1A1A?style=for-the-badge)](../README.md) [![ARQUITETURA](https://img.shields.io/badge/ARQUITETURA-6D7F66?style=for-the-badge)](../ARCHITECTURE.md) [![TESTES_102](https://img.shields.io/badge/TESTES_102-A7C2D6?style=for-the-badge)](TEST_RESULTS.md) [![AUDITORIA](https://img.shields.io/badge/AUDITORIA-E18A7A?style=for-the-badge)](AUDIT.md)
+
+<sub>Documentação interligada · paleta: creme, areia, grafite, sálvia e coral</sub>
+
+</div>
+
+---
+
 # Resultados de testes — Distributed Wagering Processor
 
 ## Validação final — 25/10/2026
@@ -115,3 +129,12 @@ NestJS project compiled successfully without reported errors.
 This initial validation confirms that the generated project builds and its starter unit test passes.
 
 Financial domain rules, database integration, concurrency, idempotency, and messaging have not yet been tested.
+
+
+---
+
+<div align="center">
+
+[![VOLTAR_AO_README](https://img.shields.io/badge/VOLTAR_AO_README-1A1A1A?style=for-the-badge)](../README.md) [![VOLTAR_AO_TOPO](https://img.shields.io/badge/VOLTAR_AO_TOPO-6D7F66?style=for-the-badge)](#top)
+
+</div>
