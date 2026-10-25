@@ -1,3 +1,17 @@
+<a id="top"></a>
+
+<div align="center">
+
+**ANDREHLB DEVLAB · DISTRIBUTED WAGERING PROCESSOR**
+
+[![INICIO](https://img.shields.io/badge/INICIO-1A1A1A?style=for-the-badge)](../README.md) [![ARQUITETURA](https://img.shields.io/badge/ARQUITETURA-6D7F66?style=for-the-badge)](../ARCHITECTURE.md) [![TESTES_102](https://img.shields.io/badge/TESTES_102-A7C2D6?style=for-the-badge)](TEST_RESULTS.md) [![AUDITORIA](https://img.shields.io/badge/AUDITORIA-E18A7A?style=for-the-badge)](AUDIT.md)
+
+<sub>Documentação interligada · paleta: creme, areia, grafite, sálvia e coral</sub>
+
+</div>
+
+---
+
 # Auditoria inicial — 25/10/2026
 
 Base: commit cdf3944, seis commits na linha local e alterações de aplicação/persistência ainda não commitadas. O histórico também contém um commit de remoção de atribuição fora da linha atual. Alterações preexistentes foram preservadas. Banco existente: 1 wallet, 2 transações, 2 lançamentos; cinco migrations aplicadas.
@@ -23,3 +37,12 @@ Testes unitários existentes; PostgreSQL e LocalStack reais; banco isolado para 
 As lacunas acima foram tratadas preservando o domínio e os testes corretos. O estado final e a relação de arquivos por bloco estão em TEST_RESULTS.md. PostgreSQL local permaneceu com 1 carteira, 2 transações e 2 lançamentos; o schema agora possui 10 migrations. As cinco migrations originais foram mantidas, e os novos problemas foram corrigidos por migrations incrementais.
 
 Validação final: 78 testes unitários e 24 de integração aprovados; build, lint e TypeScript strict aprovados; diff SQL vazio; três instâncias Docker com readiness 200. Limitações opcionais e trade-offs estão em ARCHITECTURE.md. Nenhum push foi executado.
+
+
+---
+
+<div align="center">
+
+[![VOLTAR_AO_README](https://img.shields.io/badge/VOLTAR_AO_README-1A1A1A?style=for-the-badge)](../README.md) [![VOLTAR_AO_TOPO](https://img.shields.io/badge/VOLTAR_AO_TOPO-6D7F66?style=for-the-badge)](#top)
+
+</div>
