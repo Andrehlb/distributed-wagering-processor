@@ -1,6 +1,27 @@
+<a id="top"></a>
+
 # Distributed Wagering Processor
 
 Backend financeiro distribuído com Bun 1.x, TypeScript strict, NestJS, PostgreSQL, MikroORM e SQS via LocalStack. Processa BET, WIN, LOSS, REFUND e ROLLBACK com saldo exato, ledger imutável, idempotência persistente, Inbox e Transactional Outbox.
+
+## 🧭 Navegação e evidências
+
+[![Instalação](https://img.shields.io/badge/⚙️_Instalação-1E3A5F?style=for-the-badge)](#instalação-e-execução) [![API](https://img.shields.io/badge/🌐_API-2563EB?style=for-the-badge)](#api) [![SQS](https://img.shields.io/badge/📨_Mensageria-0F766E?style=for-the-badge)](#sqs-e-eventos) [![Testes](https://img.shields.io/badge/🧪_Testes-166534?style=for-the-badge)](#migrations-e-testes)
+
+| Evidência | O que o avaliador encontra |
+| --- | --- |
+| [📊 Resultados de testes](docs/TEST_RESULTS.md) | **78 unitários + 24 de integração** registrados, cenários e resultados observados |
+| [🏗️ Arquitetura e decisões](ARCHITECTURE.md) | Concorrência, idempotência, transações, SQS, limites e trade-offs |
+| [🧪 Código dos testes distribuídos](test/distributed.integration.spec.ts) | Cenários reproduzíveis de duplicidade, concorrência, reversão e recuperação |
+| [🔎 Auditoria inicial](docs/AUDIT.md) | Lacunas encontradas antes das correções; documento histórico |
+| [🚀 Como executar](#instalação-e-execução) | Ambiente, banco, filas e três instâncias |
+| [✅ Como reproduzir os testes](#migrations-e-testes) | Comandos de validação com Bun e containers reais |
+
+> Os resultados são evidências registradas em `docs/TEST_RESULTS.md`; para confirmação independente, reproduza os comandos indicados abaixo.
+
+[![Voltar ao topo](https://img.shields.io/badge/⬆️_VOLTAR_AO_TOPO-334155?style=flat-square)](#top)
+
+---
 
 ## Instalação e execução
 
@@ -26,6 +47,11 @@ docker compose port --index 1 app 3000
 ```
 
 As portas das instâncias são atribuídas pelo Docker. O comando de consulta informa a porta da primeira. Cada instância pode receber requisições e executar os três workers; a consistência depende do PostgreSQL.
+
+
+[![⬆️ Voltar ao topo](https://img.shields.io/badge/⬆️_Voltar_ao_topo-334155?style=for-the-badge)](#top)
+
+---
 
 ## API
 
@@ -82,6 +108,11 @@ Todos os valores monetários entram e saem como strings com duas casas. O contra
 
 O replay preserva a resposta da primeira aceitação, incluindo o saldo observado, e altera apenas `idempotentReplay` para `true`. Quando a primeira resposta foi 202, consulte o GET para obter o estado atualizado após resolução da referência.
 
+
+[![⬆️ Voltar ao topo](https://img.shields.io/badge/⬆️_Voltar_ao_topo-334155?style=for-the-badge)](#top)
+
+---
+
 ## SQS e eventos
 
 O Compose cria `wager-transactions.fifo`, `wager-transactions-dlq.fifo` e `wager-events.fifo`. Use `MessageGroupId=walletId` e um `MessageDeduplicationId` por envio. As garantias financeiras permanecem no banco, inclusive após a janela de deduplicação do broker.
@@ -108,6 +139,11 @@ O Compose cria `wager-transactions.fifo`, `wager-transactions-dlq.fifo` e `wager
 
 O consumidor usa o mesmo caso de uso da API, confirma a Inbox na transação financeira e faz ACK depois do commit. Erros permanentes vão à DLQ; falhas transitórias usam backoff, com até cinco recebimentos. A outbox emite `WagerTransactionProcessed`, `WagerTransactionRejected`, `WagerTransactionPendingReference` e `WalletBalanceChanged`. Consumidores de eventos devem deduplicar por `eventId`.
 
+
+[![⬆️ Voltar ao topo](https://img.shields.io/badge/⬆️_Voltar_ao_topo-334155?style=for-the-badge)](#top)
+
+---
+
 ## Migrations e testes
 
 ```bash
@@ -126,6 +162,11 @@ As migrations anteriores foram preservadas. Correções usam migrations incremen
 
 Resultados executados: [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md). Decisões e limitações: [ARCHITECTURE.md](ARCHITECTURE.md). Auditoria inicial: [docs/AUDIT.md](docs/AUDIT.md).
 
+
+[![⬆️ Voltar ao topo](https://img.shields.io/badge/⬆️_Voltar_ao_topo-334155?style=for-the-badge)](#top)
+
+---
+
 ## Configuração
 
 | Variável | Padrão / uso |
@@ -141,3 +182,5 @@ Resultados executados: [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md). Decisões e
 | `SQS_VISIBILITY_TIMEOUT` | `30` segundos; a suíte usa `2` para testar redelivery |
 
 Autenticação externa não está implementada. O ponto de extensão `ProviderIdentityPort` e o desenho OIDC estão documentados na arquitetura. Esta entrega destina-se ao ambiente local do exercício.
+
+[![⬆️ Voltar ao topo](https://img.shields.io/badge/⬆️_Voltar_ao_topo-334155?style=for-the-badge)](#top)
