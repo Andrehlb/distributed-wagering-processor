@@ -1,5 +1,5 @@
 {
-  "name": "jungle-gaming-backend-challenge",
+  "name": "distributed-wagering-processor",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -7,9 +7,8 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "build": "nest build",
-    "deploy": "nest deploy",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "build": "bun node_modules/@nestjs/cli/bin/nest.js build",
+    "format": "bun node_modules/prettier/bin/prettier.cjs --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "bun src/main.ts",
     "start:dev": "bun --watch src/main.ts",
     "start:debug": "bun --inspect --watch src/main.ts",
@@ -19,9 +18,20 @@
     "test:watch": "bun test --watch",
     "test:cov": "bun test --coverage",
     "test:debug": "bun --inspect-brk test ./src/app.controller.spec.ts",
-    "test:e2e": "bun test ./test/app.e2e.spec.ts"
+    "test:e2e": "bun test ./test/app.e2e.spec.ts",
+    "test:unit": "bun test src",
+    "test:integration": "RUN_INTEGRATION=true bun test test",
+    "migrate": "bun scripts/migrate.ts",
+    "schema:audit": "bun scripts/schema-audit.ts",
+    "typecheck": "bun node_modules/typescript/bin/tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.1156.0",
+    "@mikro-orm/core": "^7.2.5",
+    "@mikro-orm/decorators": "^7.2.5",
+    "@mikro-orm/migrations": "^7.2.5",
+    "@mikro-orm/nestjs": "^7.1.0",
+    "@mikro-orm/postgresql": "^7.2.5",
     "@nestjs/common": "^12.0.1",
     "@nestjs/core": "^12.0.1",
     "@nestjs/platform-express": "^12.0.1",
@@ -29,6 +39,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@mikro-orm/cli": "7.2.5",
     "@nestjs/cli": "^12.0.0",
     "@nestjs/mau": "^0.2.6",
     "@nestjs/schematics": "^12.0.0",

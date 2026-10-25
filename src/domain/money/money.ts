@@ -1,4 +1,3 @@
-
 export interface MoneyProps {
   amount: string;
   currency: string;
@@ -63,8 +62,7 @@ export class Money {
 
   equals(other: Money): boolean {
     return (
-      this.currency === other.currency &&
-      this.minorUnits === other.minorUnits
+      this.currency === other.currency && this.minorUnits === other.minorUnits
     );
   }
 
@@ -76,9 +74,7 @@ export class Money {
   }
 
   toString(): string {
-    const absolute = this.minorUnits < 0n
-      ? -this.minorUnits
-      : this.minorUnits;
+    const absolute = this.minorUnits < 0n ? -this.minorUnits : this.minorUnits;
 
     const whole = absolute / 100n;
     const fraction = (absolute % 100n).toString().padStart(2, '0');
@@ -93,7 +89,11 @@ export class Money {
   }
 
   private static validateCurrency(currency: string): string {
-    if (typeof currency !== 'string' || !/^[A-Z]{3}$/.test(currency)) {
+    if (
+      typeof currency !== 'string' ||
+      !/^[A-Z]{3}$/.test(currency) ||
+      !Intl.supportedValuesOf('currency').includes(currency)
+    ) {
       throw new Error('INVALID_CURRENCY');
     }
 

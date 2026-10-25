@@ -1,4 +1,3 @@
-
 import { Money } from '../money/money.js';
 
 export enum WagerTransactionKind {
@@ -24,6 +23,7 @@ export enum LedgerDirection {
 }
 
 export type FailureCode =
+  | 'BALANCE_LIMIT_EXCEEDED'
   | 'INSUFFICIENT_FUNDS'
   | 'ROLLBACK_INSUFFICIENT_FUNDS'
   | 'REFERENCE_NOT_FOUND'
@@ -174,15 +174,10 @@ export class WagerTransaction {
   }
 
   get processedAt(): Date | undefined {
-    return this._processedAt
-      ? new Date(this._processedAt)
-      : undefined;
+    return this._processedAt ? new Date(this._processedAt) : undefined;
   }
 
-  markProcessed(
-    referenceTransactionId: string | undefined,
-    at: Date,
-  ): void {
+  markProcessed(referenceTransactionId: string | undefined, at: Date): void {
     this.assertNotTerminal();
 
     if (!Number.isFinite(at.getTime())) {
@@ -201,7 +196,13 @@ export class WagerTransaction {
   markPendingReference(): void {
     this.assertNotTerminal();
 
-    if (!this.requiresReference()) {
+    if (
+      !this.requiresReference() &&
+      !(
+        this.kind === WagerTransactionKind.Win &&
+        this.referenceExternalTransactionId
+      )
+    ) {
       throw new Error('REFERENCE_NOT_APPLICABLE');
     }
 
@@ -240,9 +241,36 @@ export class WagerTransaction {
     return this.payloadHash === payloadHash;
   }
 
-  ledgerDirectionFor(
-    reference?: WagerTransaction,
-  ): LedgerDirection | null {
+  referenceFailure(
+    reference: WagerTransaction,
+  ): 'INVALID_REFERENCE' | undefined {
+    if (
+      reference.status !== WagerTransactionStatus.Processed ||
+      reference.providerId !== this.providerId ||
+      reference.walletId !== this.walletId ||
+      reference.playerId !== this.playerId ||
+      reference.roundId !== this.roundId ||
+      reference.money.currency !== this.money.currency ||
+      reference.id === this.id
+    )
+      return 'INVALID_REFERENCE';
+    const allowed =
+      this.kind === WagerTransactionKind.Rollback
+        ? [
+            WagerTransactionKind.Bet,
+            WagerTransactionKind.Win,
+            WagerTransactionKind.Refund,
+          ]
+        : [WagerTransactionKind.Bet];
+    if (
+      !allowed.includes(reference.kind) ||
+      (this.requiresReference() && !this.money.equals(reference.money))
+    )
+      return 'INVALID_REFERENCE';
+    return undefined;
+  }
+
+  ledgerDirectionFor(reference?: WagerTransaction): LedgerDirection | null {
     switch (this.kind) {
       case WagerTransactionKind.Opening:
       case WagerTransactionKind.Win:
@@ -289,9 +317,7 @@ export class WagerTransaction {
     }
   }
 
-  private static requiresReferenceFor(
-    kind: WagerTransactionKind,
-  ): boolean {
+  private static requiresReferenceFor(kind: WagerTransactionKind): boolean {
     return (
       kind === WagerTransactionKind.Refund ||
       kind === WagerTransactionKind.Rollback
