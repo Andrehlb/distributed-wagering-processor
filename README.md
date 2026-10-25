@@ -1,5 +1,17 @@
 <a id="top"></a>
 
+<div align="center">
+
+**ANDREHLB DEVLAB · DISTRIBUTED WAGERING PROCESSOR**
+
+[![INICIO](https://img.shields.io/badge/INICIO-1A1A1A?style=for-the-badge)](README.md) [![ARQUITETURA](https://img.shields.io/badge/ARQUITETURA-6D7F66?style=for-the-badge)](ARCHITECTURE.md) [![TESTES_102](https://img.shields.io/badge/TESTES_102-A7C2D6?style=for-the-badge)](docs/TEST_RESULTS.md) [![AUDITORIA](https://img.shields.io/badge/AUDITORIA-E18A7A?style=for-the-badge)](docs/AUDIT.md)
+
+<sub>Documentação interligada · paleta: creme, areia, grafite, sálvia e coral</sub>
+
+</div>
+
+---
+
 # Distributed Wagering Processor
 
 Backend financeiro distribuído com Bun 1.x, TypeScript strict, NestJS, PostgreSQL, MikroORM e SQS via LocalStack. Processa BET, WIN, LOSS, REFUND e ROLLBACK com saldo exato, ledger imutável, idempotência persistente, Inbox e Transactional Outbox.
@@ -184,3 +196,12 @@ Resultados executados: [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md). Decisões e
 Autenticação externa não está implementada. O ponto de extensão `ProviderIdentityPort` e o desenho OIDC estão documentados na arquitetura. Esta entrega destina-se ao ambiente local do exercício.
 
 [![⬆️ Voltar ao topo](https://img.shields.io/badge/⬆️_Voltar_ao_topo-334155?style=for-the-badge)](#top)
+
+
+---
+
+<div align="center">
+
+[![VOLTAR_AO_TOPO](https://img.shields.io/badge/VOLTAR_AO_TOPO-6D7F66?style=for-the-badge)](#top)
+
+</div>
