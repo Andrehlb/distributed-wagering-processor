@@ -112,7 +112,9 @@ integration('real PostgreSQL + SQS + three Bun processes', () => {
           return;
       } catch {}
       if (processes[index]!.exitCode !== null)
-        throw new Error('API exited before readiness; child logs are collected during cleanup');
+        throw new Error(
+          'API exited before readiness; child logs are collected during cleanup',
+        );
       await Bun.sleep(100);
     }
     throw new Error('API startup timeout');
@@ -747,6 +749,38 @@ integration('real PostgreSQL + SQS + three Bun processes', () => {
     expect(await receive(dlq)).toBeDefined();
     expect((await query.wallet(w.id)).balance).toEqual(money('90.00'));
   }, 12000);
+
+  it('SQS delivers REFUND and ROLLBACK before BET without losing the pending operation', async () => {
+    for (const kind of ['REFUND', 'ROLLBACK']) {
+      const w = await wallet(),
+        bet = input(w, 'BET', '20.00'),
+        reversal = input(w, kind, '20.00', bet.externalTransactionId);
+      const key = randomUUID(),
+        messageId = await send(reversal, key);
+      await consumer.poll();
+      const pending = (
+        await sql<{ id: string; status: string }>(
+          'select id,status from wager_transactions where idempotency_key=?',
+          [key],
+        )
+      )[0]!;
+      expect(pending.status).toBe('PENDING_REFERENCE');
+      expect(
+        await count('inbox_messages', 'where message_id=?', [messageId]),
+      ).toBe(1);
+      await send(bet, randomUUID());
+      await consumer.poll();
+      await due();
+      await uc.retryPending();
+      expect((await query.transaction(pending.id)).status).toBe('PROCESSED');
+      expect((await query.reconcile(w.id)).consistent).toBe(true);
+      expect((await query.wallet(w.id)).balance).toEqual(money('100.00'));
+      expect(
+        await count('wallet_ledger_entries', 'where wallet_id=?', [w.id]),
+      ).toBe(3);
+    }
+    expect(await receive()).toBeUndefined();
+  }, 10000);
 
   it('SQS rejection commits audit and inbox before ACK without a debit', async () => {
     const w = await wallet(),
